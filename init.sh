@@ -1,11 +1,29 @@
-
 sudo /etc/init.d/mysql start
-sudo mysql -u root -e "CREATE DATABASE stepik_course_mail_ru;"
-sudo mysql -u root -e "CREATE USER box@'%' IDENTIFIED BY 'box';"
-sudo mysql -u root -e "GRANT ALL PRIVILEGES ON stepic_course_mail_ru.* TO box@'%' WITH GRANT OPTION;"
-sudo mysql -u root -e "FLUSH PRIVILEGES;
+mysql -uroot -e "create database stepic_web;"
+mysql -uroot -e "grant all privileges on stepic_web.* to 'box'@'localhost' with grant option;"
+~/web/ask/manage.py makemigrations
+~/web/ask/manage.py migrate
 
-cd ask/
-sudo python3 manage.py makemigrations
-sudo python3 manage.py migrate
+DATABASES = {
 
+    'default': {
+
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'stepic_web',
+        'USER': 'box',
+    }
+}
+
+from django.contrib.auth.models import User
+
+class QuestionManager(models.Manager):
+  def new(self):
+    return self.order_by('-added_at')
+  def popular(self):
+    return self.order_by('-rating')
+    
+    added_at = models.DateTimeField(auto_now_add=True)
+    
+    rating = models.IntegerField(default=0)
+    
+    likes = models.ManyToManyField(User, related_name='question_like_user')
