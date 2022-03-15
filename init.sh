@@ -1,6 +1,4 @@
 
-
-mysql # disable, using default sqlite3
 sudo /etc/init.d/mysql start
 sudo mysql -u root -e "CREATE DATABASE stepik_course_mail_ru;"
 sudo mysql -u root -e "CREATE USER box@'%' IDENTIFIED BY 'box';"
